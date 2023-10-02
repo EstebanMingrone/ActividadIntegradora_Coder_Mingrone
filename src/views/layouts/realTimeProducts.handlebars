@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="../../../public/css/{{style}}">
+</head>
+<body>
+        <h1>Real-Time Products</h1>
+    <ul>
+        {{#each products}}
+            <li>{{this.title}} - {{this.description}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <form id="productForm">
+        <input type="text" name="title" placeholder="Titulo">
+        <input type="text" name="description" placeholder="Descripción">
+        <input type="number" name="price" placeholder="Precio">
+        <button type="submit">Crear Producto</button>
+        <button type="button" id="deleteProduct">Eliminar Producto</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('updateProducts', (products) => {
+            const productList = document.querySelector('ul');
+            productList.innerHTML = '';
+            products.forEach((product) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${product.title} - ${product.description} - ${product.price}`;
+                productList.appendChild(listItem);
+            });
+        });
+
+        const productForm = document.querySelector('#productForm');
+        productForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(productForm);
+            const productData = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                price: parseFloat(formData.get('price')),
+            };
+
+            socket.emit('createProduct', productData);
+        });
+
+        const deleteProductButton = document.querySelector('#deleteProduct');
+        deleteProductButton.addEventListener('click', () => {
+            socket.emit('deleteProduct');
+        });
+    </script>
+</body>
+</html>

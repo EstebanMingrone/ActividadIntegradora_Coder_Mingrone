@@ -1,0 +1,13 @@
+[
+	{},
+	{
+		"title": "Manzana",
+		"description": "Red Delicious",
+		"code": "MZN001",
+		"price": 500,
+		"status": true,
+		"stock": 250,
+		"category": "Frutas",
+		"thumbnails": []
+	}
+]
